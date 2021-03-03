@@ -13,6 +13,7 @@ using System.IO;
 using MailKit.Net.Smtp;
 using MailKit;
 using MimeKit;
+using MimeKit.Utils;
 
 namespace Incominator
 {
@@ -27,8 +28,7 @@ namespace Incominator
         const double Wage = 14.50;
         const double Loan = 218.39;
         const double gasPerMonth = 50;//36.25;
-        const double Spotify = 4.99;
-        const double Expenses = Loan + gasPerMonth + Spotify;
+        const double Expenses = Loan + gasPerMonth;
 
         double TotalHours = 0;
         double TotalEarnings = 0;
@@ -41,7 +41,7 @@ namespace Incominator
         {
             try
             {
-                //  string dbFileName = FormMainMenu._DBConnectionInfo;
+                // File name with the database inside
                 string dbFileName = @"C:\Users\cjbra\Desktop\Incominator\Database\Income.accdb";
                 string dbConnectionInfo = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" + dbFileName + "; Persist Security Info=False";
                 //An OleDbConnection object represents a unique connection to a data source
@@ -79,7 +79,7 @@ namespace Incominator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error in Enter Button: \n" + ex);
 
             }
         }
@@ -109,24 +109,33 @@ namespace Incominator
                 sqlCommand.CommandText = selectString;
                 // Create and execute the DataReader, writing the result in the textboxs
                 OleDbDataReader reader = sqlCommand.ExecuteReader();
-                //check (reader.HasRows) if the DataReader contains any row or not.
 
+                
                 int Counter = 0;
-                double intEntries = 0;
+                double intEntryMonths = 0;
                 double EarningsRemainder = 0;
                 double NetPayRemainder = 0;
                 double HoursRemainder = 0;
+                // While there is information to be read from the database
                 while(reader.HasRows)
                 {
+                    // While the reader is reading information from the database
                     while (reader.Read())
                     {
+                        // Adds the database information for each entry to the total variables
                         TotalHours += double.Parse(reader.GetValue(1).ToString());
                         TotalEarnings += double.Parse(reader.GetValue(2).ToString());
                         TotalNetPay += double.Parse(reader.GetValue(3).ToString());
+                        // Adds 1 to the counter to be used in the if statement
                         Counter++;
+                        // If the counter variable is equal to 4
                         if(Counter >= 4)
                         {
-                            intEntries++;
+                            // Adds 1 to the amount of entries per month
+                            intEntryMonths++;
+                            /* Divides the total entry for 4 data entries to get the average
+                             * per month. resets the totals and counter for the next itteration.
+                             */
                             AverageEarnings += Math.Round(TotalEarnings / 4, 2);
                             AverageNetPay += Math.Round(TotalNetPay / 4, 2);
                             AverageHours += Math.Round(TotalHours / 4, 2);
@@ -145,7 +154,7 @@ namespace Incominator
                     /* Multiplies the remaining counter amount by .25 and adds that
                      * to the amount of total entries.
                      */
-                    intEntries += Counter * .25;
+                    intEntryMonths += Counter * .25;
                     break;
                 }
 
@@ -157,9 +166,9 @@ namespace Incominator
                  * by the total amount of entries in the database. Rounds the result
                  * to the nearest hundreth
                  */
-                AverageEarnings = Math.Round((AverageEarnings + EarningsRemainder) / intEntries, 2);
-                AverageNetPay = Math.Round((AverageNetPay + NetPayRemainder) / intEntries, 2);
-                AverageHours = Math.Round((AverageHours + HoursRemainder) / intEntries, 2);
+                AverageEarnings = Math.Round((AverageEarnings + EarningsRemainder) / intEntryMonths, 2);
+                AverageNetPay = Math.Round((AverageNetPay + NetPayRemainder) / intEntryMonths, 2);
+                AverageHours = Math.Round((AverageHours + HoursRemainder) / intEntryMonths, 2);
 
                 // Displays the averaged totals in a text label
                 txtAverageEarnings.Text = AverageEarnings.ToString();
@@ -188,7 +197,7 @@ namespace Incominator
             catch (Exception ex)
             {
                 // Displays the system error message and location of the error
-                MessageBox.Show("Error: " + ex.ToString());
+                MessageBox.Show("Error in UpdateInformation Button: \n" + ex);
             }
 
         }
@@ -205,16 +214,12 @@ namespace Incominator
                 message.To.Add(new MailboxAddress(RecipientName, ToEmail));
                 message.Subject = "Incominator Report";
 
-                int TryCatchTest = int.Parse(label1.Text);
-
-                message.Body = new TextPart("plain")
-                {
-
-                    Text = @"Average Earnings Weekly: " + AverageEarnings + @"
-Average NetPay Weekly: $" + AverageNetPay + @"
-Average Hours Weekly: $" + AverageHours + @"
-"
-                };
+                var builder = new BodyBuilder();
+                builder.HtmlBody = string.Format(@"<h2>Incominator Report:</h2>
+<p> Average Earnings Weekly: <b>$" + AverageEarnings + @"</b>
+<p> Average NetPay Weekly: <b>$" + AverageNetPay + @"</b>
+<p> Average Hours Weekly: <b>" + AverageHours + @"</b>");
+                message.Body = builder.ToMessageBody();
 
                 using (var client = new SmtpClient())
                 {
@@ -237,6 +242,8 @@ Average Hours Weekly: $" + AverageHours + @"
         }
         private void btnSendReport_Click(object sender, EventArgs e)
         {
+            // Forces a report to be sent
+            // Will add automatic reports at some point
             SendReport();
         }
 
