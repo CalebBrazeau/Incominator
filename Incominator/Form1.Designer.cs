@@ -39,7 +39,6 @@ namespace Incominator
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.btnUpdateDisplay = new System.Windows.Forms.Button();
             this.txtAverageNetPay = new System.Windows.Forms.Label();
             this.txtAverageHours = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -140,17 +139,6 @@ namespace Incominator
             this.label5.Size = new System.Drawing.Size(160, 17);
             this.label5.TabIndex = 8;
             this.label5.Text = "Average Hours Weekly:";
-            // 
-            // btnUpdateDisplay
-            // 
-            this.btnUpdateDisplay.Location = new System.Drawing.Point(813, 12);
-            this.btnUpdateDisplay.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.btnUpdateDisplay.Name = "btnUpdateDisplay";
-            this.btnUpdateDisplay.Size = new System.Drawing.Size(124, 55);
-            this.btnUpdateDisplay.TabIndex = 9;
-            this.btnUpdateDisplay.Text = "How do I delete this button :(";
-            this.btnUpdateDisplay.UseVisualStyleBackColor = true;
-            this.btnUpdateDisplay.Click += new System.EventHandler(this.btnUpdateDisplay_Click);
             // 
             // txtAverageNetPay
             // 
@@ -311,7 +299,6 @@ namespace Incominator
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtAverageHours);
             this.Controls.Add(this.txtAverageNetPay);
-            this.Controls.Add(this.btnUpdateDisplay);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -342,7 +329,6 @@ namespace Incominator
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button btnUpdateDisplay;
         private System.Windows.Forms.Label txtAverageNetPay;
         private System.Windows.Forms.Label txtAverageHours;
         private System.Windows.Forms.Label label6;

@@ -41,7 +41,8 @@ namespace Incominator
         {
             try
             {
-                // File name with the database inside
+                
+                // File location with the database inside
                 string dbFileName = @"C:\Users\cjbra\Desktop\Incominator\Database\Income.accdb";
                 string dbConnectionInfo = @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" + dbFileName + "; Persist Security Info=False";
                 //An OleDbConnection object represents a unique connection to a data source
@@ -110,14 +111,15 @@ namespace Incominator
                 // Create and execute the DataReader, writing the result in the textboxs
                 OleDbDataReader reader = sqlCommand.ExecuteReader();
 
-                
+
                 int Counter = 0;
                 double intEntryMonths = 0;
                 double EarningsRemainder = 0;
                 double NetPayRemainder = 0;
                 double HoursRemainder = 0;
+
                 // While there is information to be read from the database
-                while(reader.HasRows)
+                while (reader.HasRows)
                 {
                     // While the reader is reading information from the database
                     while (reader.Read())
@@ -206,6 +208,7 @@ namespace Incominator
             // Send report button
             try
             {
+                // Email to send the report to
                 string ToEmail = "cjbrazeau12@gmail.com";
                 string RecipientName = "Finance Project";
 
@@ -244,7 +247,49 @@ namespace Incominator
         {
             // Forces a report to be sent
             // Will add automatic reports at some point
-            SendReport();
+            //SendReport();
+            string line;
+            try
+            {
+                //Pass the file path and file name to the StreamReader constructor
+                StreamReader sr = new StreamReader(@"C:\Users\cjbra\Desktop\IncominatorGit\TextFiles\TestFile.txt");
+                //Read the first line of text
+                line = sr.ReadLine();
+                //Continue to read until you reach end of file
+                while (line != null)
+                {
+                    //write the lie to console window
+                    Console.WriteLine(line);
+                    //Read the next line
+                    line = sr.ReadLine();
+                }
+                //close the file
+                sr.Close();
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+            Int64 x;
+            try
+            {
+                //Open the File
+                StreamWriter sw = new StreamWriter(@"C:\Users\cjbra\Desktop\IncominatorGit\TextFiles\CreateTestFile.txt", true, Encoding.ASCII);
+
+                //Write out the numbers 1 to 10 on the same line.
+                for (x = 0; x < 10; x++)
+                {
+                    sw.Write(x);
+                }
+
+                //close the file
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
         }
 
         private void resetVariables()
@@ -256,12 +301,6 @@ namespace Incominator
             AverageEarnings = 0;
             AverageNetPay = 0;
         }
-
-        private void btnUpdateDisplay_Click(object sender, EventArgs e)
-        {
-            // Not sure how to delete this without errors :(
-        }
-
 
     }
 }
